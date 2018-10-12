@@ -1,42 +1,37 @@
-const Article = require('../models/Article');
+const db = require("../models");
 
+// Defining methods for the booksController
 module.exports = {
-    index: function (req, res) {
-        var query;
-        if (req.query) {
-            query = req.query;
-        }
-        else {
-            query = req.params.id ? { _id: req.params.id } : {};
-        }
-        Article.find(query)
-            .then(function (doc) {
-                res.json(doc);
-            }).catch(function (err) {
-                res.json(err);
-            });
-    },
-    // This method handles creating new articles
-    create: function (req, res) {
-        const savedArticle = {};
-        savedArticle.title = req.body.article.headline.main;
-        savedArticle.url = req.body.article.web_url;
-        // savedArticle.date	= req.body.article.pub_date;  
-        savedArticle.date = Date.now();
-        Article.create(savedArticle).then(function (doc) {
-            res.json(doc);
-        }).catch(function (err) {
-            res.json(err);
-        });
-    },
-    // This method handles deleting articles
-    destroy: function (req, res) {
-        Article.remove({
-            _id: req.params.id
-        }).then(function (doc) {
-            res.json(doc);
-        }).catch(function (err) {
-            res.json(err);
-        });
-    }
+  findAll: function(req, res) {
+    db.Article
+      .find(req.query)
+      .sort({ date: -1 })
+      .then(dbModel => res.json(dbModel))
+      .catch(err => res.status(422).json(err));
+  },
+  findById: function(req, res) {
+    db.Article
+      .findById(req.params.id)
+      .then(dbModel => res.json(dbModel))
+      .catch(err => res.status(422).json(err));
+  },
+  create: function(req, res) {
+    db.Article
+      .create(req.body)
+      .then(dbModel => res.json(dbModel))
+      .catch(err => res.status(422).json(err));
+  },
+  update: function(req, res) {
+    db.Article
+      .findOneAndUpdate({ _id: req.params.id }, req.body)
+      .then(dbModel => res.json(dbModel))
+      .catch(err => res.status(422).json(err));
+  },
+  remove: function(req, res) {
+    db.Article
+      .findById({ _id: req.params.id })
+      .then(dbModel => dbModel.remove())
+      .then(dbModel => res.json(dbModel))
+      .catch(err => res.status(422).json(err));
+  }
 };

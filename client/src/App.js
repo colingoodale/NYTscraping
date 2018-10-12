@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
+import Nav from './components/Nav';
+import SearchForm from './components/SearchForm';
+import ArticleDisplay from './components/ArticleDisplay';
+import Notes from './components/Notes'
 import './App.css';
 
 class App extends Component {
